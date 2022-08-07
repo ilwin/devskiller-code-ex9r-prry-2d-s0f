@@ -11,7 +11,7 @@ export interface IMyStore {
 }
 
 export interface IProductsList {
-    products: Record<string, IProduct>;
+    products: Array<IProduct>;
     selectedId?: string;
     onClick(id: string): void;
     deleteProduct(id: string): void;
