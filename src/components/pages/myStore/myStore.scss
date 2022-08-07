@@ -1,0 +1,24 @@
+.my-store {
+  display: flex;
+  flex-direction: row;
+
+  .products-ops, .spacer {
+    height: 40px;
+  }
+
+  .products {
+    display: flex;
+    flex-direction: column;
+    flex: 2;
+    margin-right: 10px;
+    .products-ops {
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+
+  .product-details {
+    display: flex;
+    flex: 1;
+  }
+}
