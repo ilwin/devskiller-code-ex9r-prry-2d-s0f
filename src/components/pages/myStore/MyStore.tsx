@@ -1,5 +1,6 @@
 import React, {FC, useEffect, useState} from 'react';
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux';
+import _ from 'lodash';
 
 import ProductsList from './ProductsList';
 import { IMyStore } from '../types';
@@ -8,6 +9,10 @@ import {IProductAPI, IRootState} from "store/types";
 import ProductCard from "components/productCard/ProductCard";
 import './myStore.scss';
 
+const enum SORT_DIRECTIONS  {
+    'ASC'= 'asc',
+    'DESC'= 'desc'
+}
 
 const MyStore: FC<IMyStore> = () => {
     const products = useSelector((state: IRootState) => state.products.products);
@@ -16,7 +21,7 @@ const MyStore: FC<IMyStore> = () => {
     const [filteredProducts, setFilteredProducts] = useState<Array<IProductAPI>>([]);
     const [searchText, setSearchText] = useState<string>('');
     const [searchTimeout, setSearchTimeout] = useState<ReturnType<typeof setTimeout> | null>(null);
-
+    const [sortDirection, setSortDirection] = useState<SORT_DIRECTIONS>(SORT_DIRECTIONS.ASC )
     useEffect(() => {
         dispatch(getProducts());
     }, []);
@@ -69,6 +74,12 @@ const MyStore: FC<IMyStore> = () => {
         }, 300));
     }
 
+    const handleSort = () => {
+        setFilteredProducts(_.orderBy([...filteredProducts], 'name', sortDirection));
+        setSortDirection(sortDirection => sortDirection === SORT_DIRECTIONS.ASC ?
+            SORT_DIRECTIONS.DESC : SORT_DIRECTIONS.ASC);
+    }
+
     const saveButton = (
         <button className='save-product-btn'>
             Save
@@ -84,7 +95,7 @@ const MyStore: FC<IMyStore> = () => {
                         <label htmlFor="search-input">Search Products: </label>
                         <input id="search-input" type="text" onChange={handleSearch} value={searchText}/>
                     </div>
-                    {/*{sortButton}*/}
+                    <button onClick={handleSort}>{sortDirection}</button>
                 </div>
                 <ProductsList products={filteredProducts} selectedId={selectedProduct?.id} onClick={handleOnProductClick} deleteProduct={handleDeleteProduct} />
                 {/*<div className='pagination' />*/}
