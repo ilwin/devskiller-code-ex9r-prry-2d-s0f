@@ -1,6 +1,6 @@
 export interface IProductCard {
-    id: string;
-    className: 'product-preview' | 'product-edit';
+    id?: string;
+    className?: 'product-preview' | 'product-edit';
     imgSrc: string;
     name: string;
     description: string;

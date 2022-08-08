@@ -7,9 +7,16 @@ export interface IProductAPI {
 }
 
 export interface IProductsModel {
-    products: Record<string, IProductAPI>
+    products: Record<string, IProductAPI>;
+    lastId: string;
+    productTemplate: IProductAPI;
+}
+
+export interface ISettingsModel {
+    shouldShowModal: boolean;
 }
 
 export interface IRootState {
-    products: IProductsModel
+    products: IProductsModel;
+    settings: ISettingsModel;
 }

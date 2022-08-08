@@ -4,10 +4,12 @@ import _ from 'lodash';
 
 import ProductsList from './ProductsList';
 import { IMyStore } from '../types';
-import {getProducts, updateProducts} from 'store/products/productsSlice'
+import {getProducts, updateProducts} from 'store/products/productsSlice';
+import {toggleModal} from 'store/settings/settingsSlice';
 import {IProductAPI, IRootState} from "store/types";
 import ProductCard from "components/productCard/ProductCard";
 import './myStore.scss';
+import Modal from "../../modal/Modal";
 
 const enum SORT_DIRECTIONS  {
     'ASC'= 'asc',
@@ -15,13 +17,17 @@ const enum SORT_DIRECTIONS  {
 }
 
 const MyStore: FC<IMyStore> = () => {
-    const products = useSelector((state: IRootState) => state.products.products);
+    const productsStore = useSelector((state: IRootState) => state.products);
+    const {products, productTemplate} = productsStore;
+    const {shouldShowModal} = useSelector((state: IRootState) => state.settings);
     const dispatch = useDispatch();
     const [selectedProduct, setSelectedProduct] = useState<IProductAPI | null>(null);
     const [filteredProducts, setFilteredProducts] = useState<Array<IProductAPI>>([]);
     const [searchText, setSearchText] = useState<string>('');
     const [searchTimeout, setSearchTimeout] = useState<ReturnType<typeof setTimeout> | null>(null);
-    const [sortDirection, setSortDirection] = useState<SORT_DIRECTIONS>(SORT_DIRECTIONS.ASC )
+    const [sortDirection, setSortDirection] = useState<SORT_DIRECTIONS>(SORT_DIRECTIONS.ASC );
+    const [modalContent, setModalContent] = useState<React.ReactNode>(<></>);
+
     useEffect(() => {
         dispatch(getProducts());
     }, []);
@@ -31,7 +37,6 @@ const MyStore: FC<IMyStore> = () => {
     }, [products]);
 
     useEffect(() => {
-        console.log('filteredProducts', filteredProducts)
         const keys = Object.keys(filteredProducts);
         if (keys.length) {
             if(!selectedProduct || !keys.includes(selectedProduct.id)){
@@ -86,11 +91,17 @@ const MyStore: FC<IMyStore> = () => {
         </button>
     );
 
+    const handleAddProduct = () => {
+        console.log('handleAddProduct')
+        setModalContent(<ProductCard  {...productTemplate} button={saveButton} />);
+        dispatch(toggleModal());
+    }
+
     return (
         <div className='my-store'>
             <div className='products'>
                 <div className='products-ops'>
-                    {/*{addProductButton}*/}
+                    <button onClick={handleAddProduct}>Add</button>
                     <div>
                         <label htmlFor="search-input">Search Products: </label>
                         <input id="search-input" type="text" onChange={handleSearch} value={searchText}/>
@@ -104,6 +115,7 @@ const MyStore: FC<IMyStore> = () => {
                 <div className="spacer" />
                 {selectedProduct && <ProductCard {...selectedProduct} className='product-edit' button={saveButton} />}
             </div>
+            <Modal content={modalContent} isVisible={shouldShowModal} />
         </div>
     );
 };

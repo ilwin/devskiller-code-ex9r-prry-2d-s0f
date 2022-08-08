@@ -3,18 +3,29 @@ import products from 'mocks/products';
 import {IProductsModel} from "../types";
 
 const productsInitialState: IProductsModel = {
-    products: {}
+    products: {},
+    lastId: '4',
+    productTemplate: {
+        id: '',
+        imgSrc: '',
+        name: '',
+        description: '',
+        price: 0,
+    },
 }
 export const productsSlice = createSlice({
     name: 'products',
     initialState: productsInitialState,
     reducers: {
         getProducts: (state) => {
-            state.products = products
+            state.products = products;
         },
         updateProducts: (state, action) => {
-            console.log(action.payload)
             state.products = action.payload
+        },
+        addProduct: (state, action) => {
+            state.products = {...state.products, [(parseInt(state.lastId) + 1).toString()]: action.payload};
+            state.lastId = (parseInt(state.lastId) + 1).toString();
         }
     },
 })
