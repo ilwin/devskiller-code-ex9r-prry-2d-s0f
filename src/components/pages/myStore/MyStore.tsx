@@ -11,7 +11,7 @@ import ProductCard from "components/productCard/ProductCard";
 import './myStore.scss';
 import Modal from "../../modal/Modal";
 
-const enum SORT_DIRECTIONS  {
+export enum SORT_DIRECTIONS  {
     'ASC'= 'asc',
     'DESC'= 'desc'
 }
